@@ -4,8 +4,8 @@ import re
 from collections import defaultdict
 import sys
 sys.path.append(os.path.abspath('../../lib'))
-from lib.constants import *
-from lib.load_organisms import *
+from constants import *
+from load_organisms import *
 import gzip
 
 def read_fasta_from_gz(gz_file):  # Decompress proteome file
@@ -138,7 +138,7 @@ def Processing_proteomes():
             continue
 
         polyx_path = os.path.join(polyx_folder, polyx_file)
-        output_path = os.path.join(OUTPUT_DIR, "proteomes_hrs", category, up_id, f"{up_id}_hrs.tsv")
+        output_path = os.path.join(OUTPUT_DIR, "proteomes_hrs", category, up_id, f"{up_id}_{tax_id}_hrs.tsv")
 
         # Create output category directory if not exists
         os.makedirs(os.path.dirname(output_path), exist_ok=True)

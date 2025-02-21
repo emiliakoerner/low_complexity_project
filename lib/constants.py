@@ -33,12 +33,12 @@ REF_DIR = os.path.join(INPUT_BASE_DIR, "ftp.uniprot.org", "pub", "databases", "u
              "knowledgebase", "reference_proteomes", "Reference_Proteomes_2024_06")
 README_PATH = os.path.join(REF_DIR, "README")   # contains information about reference proteomes, from uniprot
 
-# Taxons and the folder structure are defined by Uniprot
+# Taxons and the folder structure are defined by Uniprot    
 TAXON_CATEGORIES = ["Archaea", "Bacteria", "Eukaryota", "Viruses"]
 SELECTED_ORGANISMS = None
 #Must be None for 'SELECTED_TAXA' to be considered!
 #SELECTED_ORGANISMS = {"UP000005640", "UP000000589", "UP000000803", "UP000001940", "UP000006548", "UP000000625", "UP000002311"}
-SELECTED_TAXA = {"Eukaryota", "Archaea"}
+SELECTED_TAXA = {"Viruses"}
 # Select organisms or taxa you want to process. All 4 main scripts use this set!
 
 # mapping files from Uniprot for housekeeping.
