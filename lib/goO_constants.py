@@ -1,20 +1,20 @@
 
 # Define the groups of organisms in each cluster
-
-BACTERIA = ['Bacteria']
+VIRUSES = ['Viruses']
 
 ARCHAEA = ['Archaea']
 
-VIRUSES = ['Viruses']
+BACTERIA = ['Bacteria']
+
+PROTISTS = ['Alveolata', 'Amoeboza', 'Apusozoa', 'Bigyra', 'Cryptophyceae', 'Discoba', 'Haptista', 'Metamonada', 'Ochrophyta', 'Oomycota', 'Opisthokonta', 'Rhizaria']
 
 FUNGI = ['Fungi']
-#FUNGI = ['Ascomycota', 'Basidiomycota', 'Microsporidia', 'Mucoromycota', 'Chytridiomycota', 'Blastocladiomycota', 'Cryptomycota', 'Olpidiomycota', 'Zoopagomycota']
+
+PLANTS = ['Viridiplantae', 'Rhodophyta', 'Phaeophyceae', 'Xanthophyceae']
 
 VERTEBRATES = ['Vertebrata']
 
 INVERTEBRATES = ['Metazoa']
-
-PLANTS = ['Viridiplantae', 'Rhodophyta', 'Phaeopyceae', 'Xanthophyceae']
 
 # protists: Can belong to Amoebozoa, Apusozoa, Cryptophyceae (Guillardia theta), Discoba, Metamonada,
 # Opisthokonta, Alveolata, Rhizaria and Stramenopiles
