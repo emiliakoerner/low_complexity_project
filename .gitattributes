@@ -1,0 +1,1 @@
+main_tables/mapping_files/*.txt filter=lfs diff=lfs merge=lfs -text
