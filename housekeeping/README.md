@@ -13,6 +13,7 @@ If no arguments are provided when running the script, it falls back to SELECTED_
 - Dependencies: constants.py and load_organisms.py
 
 ## Functions
+- remove_suffix(uniprot_id): removes suffixes with the format ".*" to turn Transcript IDs into Gene IDs for Arabidopsis.
 - Housekeeping_mapping_uniprot(hk_file, mapping_file, output_file): Maps Housekeeping gene lists to Uniprot using the underlying data files of the Uniprot Mapping tool. Paths to mapping files are defined in constants.py and do not need to be changed as long as the repository structure is maintained.
 
 
