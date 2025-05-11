@@ -1,57 +1,62 @@
-# Mapping housekeeping lists from different sources to UniProt using underlying data from UniProt ID mapping tool
-# Import python modules
 import os
 import sys
-sys.path.append(os.path.abspath('../../lib'))
+import re
+
+sys.path.append(os.path.abspath('../lib'))
 from constants import *
 from load_organisms import organisms
 
-
+# Remove suffixes like ".1" for Arabidopsis
 def remove_suffix(uniprot_id):
-    return re.sub(r"\.\d+$", "", uniprot_id) # Arabidopsis gene names have suffixes like AT12345.1
-# Function to map Housekeeping gene lists to Uniprot using the
-# underlying data files of the Uniprot Mapping tool.
+    return re.sub(r"\.\d+$", "", uniprot_id)
+
+# For organisms with internal mapping file
 def Housekeeping_mapping_uniprot(hk_file, mapping_file, hk_list):
     with open(mapping_file, 'r') as mapping:
-        mapping_lines = mapping.readlines()     # Mapping file is read into python storage
+        mapping_lines = mapping.readlines()
+
     with open(hk_file, 'r') as hk_file, open(hk_list, 'w') as output:
         for line in hk_file:
-            listid = line.strip().split("\t")[0]    # Hk genes are stored and iterated through
+            listid = line.strip().split("\t")[0]
             if up_id == "UP000006548":
-                listid = listid.split(".")[0]       # in case there is a suffix like ".1"
+                listid = listid.split(".")[0]
             for line2 in mapping_lines:
                 columns = line2.strip().split("\t")
-                mapid = columns[2]     # species-specific IDs are always in the third column of the mapping file
-                #print(f"Checking if {listid} == {mapid}")  # Debug print
-                if listid == mapid:     # If a matching entry in the mapping file is found,
-                    uniprot_id = columns[0]     # The Uniprot ID is stored and written into an output file with both IDs
+                if len(columns) < 3:
+                    continue
+                mapid = columns[2]
+                if listid == mapid:
+                    uniprot_id = columns[0]
                     output.write(f"{listid}\t{uniprot_id}\n")
                     break
 
-# Define dynamic file paths for each organism
-file_paths = {}
+# For organisms mapped via UniProt web tool
+def normalize_uniprot_mapping(uniprot_mapping_file, output_file):
+    with open(uniprot_mapping_file, 'r') as infile, open(output_file, 'w') as outfile:
+        next(infile)  # Skip header
+        for line in infile:
+            parts = line.strip().split("\t")
+            if len(parts) >= 2:
+                original_id = parts[0]
+                uniprot_id = parts[1]
+                outfile.write(f"{original_id}\t{uniprot_id}\n")
+
+# === MAIN PROCESS ===
 for up_id in organisms:
-    file_paths[up_id] = {
-        # Data
-        'UNMAPPED_HK_LIST_FILE': os.path.join(MAINTABLES_DIR, f"hk_unmapped/{up_id}_hk_unmapped.txt"),
-        'HK_LIST_FILE': os.path.join(HK_LISTS_DIR, f"{up_id}_hk.txt"),
-        # Results
-        'MAPPED_HK_POLYX_FILE': os.path.join(OUTPUT_DIR, f"proteomes_hrs_hk/{up_id}_hrs_hk.tsv")
-    }
-    hk_file = file_paths[up_id]['UNMAPPED_HK_LIST_FILE']
+    hk_list = os.path.join(HK_LISTS_DIR, f"{up_id}_hk.txt")
+
+    # Path if needs internal mapping
+    hk_file_mapped = os.path.join(MAINTABLES_DIR, f"hk_unmapped/{up_id}_hk_unmapped.txt")
     mapping_file = globals().get(f"{up_id}_mapping")
-    hk_list = file_paths[up_id]['HK_LIST_FILE']
 
-    print(f"Processing {hk_file}... with mapping file {mapping_file}, creating {hk_list}")  # Print status update
-    if mapping_file is None:
-        print(f"ERROR: Mapping file for {up_id} is None! Check variable name.")
-        continue  # Skip to next organism
-    if not os.path.exists(hk_file):
-        print(f"ERROR: hk_file not found -> {hk_file}")
-        continue
-    if not os.path.exists(mapping_file):
-        print(f"ERROR: mapping_file not found -> {mapping_file}")
-        continue
+    # Path if already mapped via UniProt tool
+    hk_file_uniprot = os.path.join(MAINTABLES_DIR, f"uniprot_id_mapping_tool/{up_id}_uniprot_tool.tsv")
 
-    Housekeeping_mapping_uniprot(hk_file, mapping_file, hk_list)
-
+    if os.path.exists(hk_file_mapped) and mapping_file and os.path.exists(mapping_file):
+        print(f"[{up_id}] Using internal mapping: {hk_file_mapped} + {mapping_file} → {hk_list}")
+        Housekeeping_mapping_uniprot(hk_file_mapped, mapping_file, hk_list)
+    elif os.path.exists(hk_file_uniprot):
+        print(f"[{up_id}] Using UniProt tool file: {hk_file_uniprot} → {hk_list}")
+        normalize_uniprot_mapping(hk_file_uniprot, hk_list)
+    else:
+        print(f"[{up_id}] ERROR: No valid mapping or UniProt file found.")

@@ -40,7 +40,7 @@ def Map_to_hklist(proteome_hrs, housekeeping_list, output):
 
     with open(proteome_hrs, 'r') as proteome_file, open(output, 'w') as output_file:
         output_file.write("Genename\tUniprot_id\tLength\tPolyx_count\tPolyx_types\tPolyx_lengths"
-                          "\tTotal_length\tPption_polyx\tCount_grouped\tHk\n")  # Write header
+                          "\tTotal_length\tPption_polyx\tCount_grouped\tHK\n")  # Write header
 
         # Iterate through each line in the proteome file
         next(proteome_file) # skip header

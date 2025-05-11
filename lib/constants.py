@@ -38,7 +38,7 @@ TAXON_CATEGORIES = ["Archaea", "Bacteria", "Eukaryota", "Viruses"]
 #SELECTED_ORGANISMS = None
 #Must be None for 'SELECTED_TAXA' to be considered!
 #SELECTED_ORGANISMS = {"UP000005640", "UP000000589", "UP000000803", "UP000001940", "UP000006548", "UP000000625", "UP000002311"}
-SELECTED_ORGANISMS = {"UP000000803"}
+SELECTED_ORGANISMS = {"UP000000539", "UP000002279", "UP000002280", "UP000001075", "UP000006718", "UP000001595", "UP000001519", "UP000002277"}
 #SELECTED_ORGANISMS = {"UP000005640"}
 SELECTED_TAXA = {"Viruses"}
 # Select organisms or taxa you want to process. All 4 main scripts use this set!
@@ -51,6 +51,7 @@ UP000001940_mapping = os.path.join(MAINTABLES_DIR, "mapping_files\\CAEEL_6239_id
 UP000002311_mapping = os.path.join(MAINTABLES_DIR, "mapping_files\\YEAST_559292_idmapping.txt")
 UP000000625_mapping = os.path.join(MAINTABLES_DIR, "mapping_files\\ECOLI_83333_idmapping.txt")
 UP000006548_mapping = os.path.join(MAINTABLES_DIR, "mapping_files\\ARATH_3702_idmapping.txt")
+UP000000539_mapping = os.path.join(MAINTABLES_DIR, "mapping_files\\CHICK_9031_idmapping.txt")
 
 
 """# Housekeeping (move to extra file?)

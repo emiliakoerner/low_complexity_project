@@ -1,0 +1,215 @@
+## Gene length Analysis
+
+This notebook processes the extracted data from `.txt` files and generates visualizations.
+
+```{r}
+# Load necessary libraries
+library(tidyverse)
+library(readxl)
+library(dplyr)
+library(conflicted)
+conflict_prefer("filter", "dplyr")
+
+```
+
+## Set the organisms you want to process
+
+```{r}
+# Create a data frame for the UP numbers and organisms
+up_to_organism <- tibble(
+  UP_number = c("UP000000625", "UP000002311", "UP000006548", "UP000001940", "UP000000803", "UP000000539", "UP000002279", "UP000002280", "UP000001075", "UP000000589", "UP000006718", "UP000001595", "UP000001519", "UP000002277", "UP000005640"),
+  Organism = c("Escherichia coli", "Saccharomyces cerevisiae", "Arabidopsis thaliana", "Caenorhabditis elegans", "Drosophila melanogaster", "Gallus gallus", "Ornithorhynchus anatinus", "Monodelphis domestica", "Cricetulus griseus", "Mus musculus", "Macaca mulatta", "Pongo abelii", "Gorilla gorilla gorilla", "Pan troglodytes", "Homo sapiens")
+)
+
+# Display the table using knitr::kable
+knitr::kable(up_to_organism, caption = "Mapping of UP Numbers to Organisms")
+
+```
+
+## Select organisms you want to display here.
+
+All organisms with their UP IDs in this list will be processed and shown in the figures.
+
+```{r}
+# Select only the organisms you want to plot
+selected_organisms <- c("UP000000625", "UP000002311", "UP000006548", "UP000001940", "UP000000803", "UP000000539", "UP000002279", "UP000002280", "UP000001075", "UP000000589", "UP000006718", "UP000001595", "UP000001519", "UP000002277", "UP000005640")
+```
+
+## Load Data
+
+Reading the `.tsv` files into R and combining them into a single dataframe.
+
+```{r}
+# Read in data from .tsv files
+file_paths <- list.files("D:/Emilia/low_complexity_project/analysis/genelengthoutput", 
+                         pattern = "*.tsv", full.names = TRUE)
+organism_data <- file_paths %>%
+  map_dfr(~read_tsv(.x, show_col_types = FALSE) %>%
+            mutate(Organism = str_remove(tools::file_path_sans_ext(basename(.x)), "_length")))
+
+HkPolyx <- organism_data %>%
+  filter(Organism %in% selected_organisms) %>%  # Filter data for selected organisms
+  droplevels() %>%
+  filter(genelength != "-") %>%
+  mutate(Organism = factor(Organism)) %>%
+  mutate(Hk = recode(Hk, `0` = "not Hk", `1` = "Hk"),
+         Hk = as.factor(Hk),
+         Hk = factor(Hk, levels = rev(levels(Hk))),
+         genelength = as.numeric(genelength)) %>%
+  filter(!is.na(genelength))
+
+print(unique(HkPolyx$Organism))
+
+```
+## Link UP IDs to scientific organism names
+
+```{r}
+# organism names
+organism_labels <- c(
+  "UP000000625" = "italic('E. coli')",
+  "UP000002311" = "italic('S. cerevisiae')",
+  "UP000001940" = "italic('C. elegans')",
+  "UP000000803" = "italic('D. melanogaster')",
+  "UP000000589" = "italic('M. musculus')",
+  "UP000005640" = "italic('Homo sapiens')",
+  "UP000006548" = "italic('A. thaliana')",
+  "UP000006718" = "italic('Macaca mulatta (28.8 MYA)')",
+  "UP000001595" = "italic('Pongo abelii (15.2 MYA)')",
+  "UP000001519" = "italic('Gorilla gorilla gorilla (8.6 MYA)')",
+  "UP000002277" = "italic('Pan troglodytes (6.4 MYA)')",
+  "UP000000539" = "italic('Gallus gallus (319 MYA)')",
+  "UP000002279" = "italic('O. anatinus')",      # (180 MYA)
+  "UP000002280" = "italic('M. domestica')",     #  (160 MYA)
+  "UP000001075" = "italic('C. griseus (87 MYA)')"
+)
+```
+
+## Print average gene length
+
+```{r}
+# Convert Organism column AFTER filtering
+HkPolyx$Organism <- factor(HkPolyx$Organism, levels = selected_organisms, labels = organism_labels[selected_organisms])
+HkPolyx
+
+# Group and calculate average gene length
+average_lengths <- HkPolyx %>%
+  group_by(Organism, Hk) %>%
+  summarize(average_genelength = mean(genelength, na.rm = TRUE),
+            .groups = "drop")
+
+# Print the result
+print(average_lengths)
+
+
+# Summarize counts and mean lengths per Hk status
+by_status <- HkPolyx %>%
+  group_by(Organism, Hk) %>%
+  summarize(
+    Count = n(),
+    Mean_Length = mean(genelength, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  pivot_wider(
+    names_from = Hk,
+    values_from = c(Count, Mean_Length),
+    names_glue = "{.value}_{Hk}"
+  )
+
+# Add overall mean gene length per organism (ignoring Hk status)
+overall_means <- HkPolyx %>%
+  group_by(Organism) %>%
+  summarize(Mean_Length_All = mean(genelength, na.rm = TRUE), .groups = "drop")
+
+# Join both tables
+final_summary <- left_join(by_status, overall_means, by = "Organism")
+
+# Show as a nice table
+knitr::kable(final_summary, digits = 2, caption = "Gene counts and average lengths by organism and Hk status")
+
+
+```
+
+## Assign significance values manually
+
+```{r}
+# manual significance values
+significance_values <- c(
+  "UP000000625" = "***",
+  "UP000006548" = "***",
+  "UP000002311" = "***",
+  "UP000001940" = "***",
+  "UP000000803" = "***",
+  "UP000000589" = "***",
+  "UP000005640" = "***",
+  "UP000006718" = "***",
+  "UP000001595" = "***",
+  "UP000001519" = "**",
+  "UP000002277" = "***",
+  "UP000000539" = "ns",
+  "UP000002279" = "***",
+  "UP000002280" = "***",
+  "UP000001075" = "***"
+)
+
+
+significance_filtered <- tibble(
+  Organism = factor(
+    selected_organisms, 
+    levels = selected_organisms, 
+    labels = organism_labels[selected_organisms]
+  ),
+  x = rep(1.5, length(selected_organisms)),
+  y = rep(80000, length(selected_organisms)), 
+  label = significance_values[selected_organisms]
+)
+```
+
+## Visualization
+```{r}
+# Boxplot visualization with human-readable names
+HkPolyx %>%
+  ggplot(aes(x = Hk, y = genelength, fill = Hk)) +
+  geom_boxplot(size = 1.2, notch = TRUE) +
+  ylab("Gene length (bp)") +
+  coord_cartesian(ylim = c(0, 5000)) +                   # Adjust limits depending on organisms gene length.
+  scale_fill_manual(values = c("#ffc8d2", "#ccffee")) +
+  stat_summary(fun = "mean", geom = "point", shape = 21, size = 4, color = "black", fill = "white") +
+  facet_wrap(~Organism, ncol = 2, labeller = label_parsed) +
+  theme_minimal() +
+  geom_text(
+    data = HkPolyx %>%
+      group_by(Hk, Organism) %>%
+      summarize(median_length = median(genelength, na.rm = TRUE),
+                Count = n(), .groups = "drop"),
+    aes(x = Hk,
+        y = median_length - 5000,  # Adjust position as needed
+        label = Count),
+    inherit.aes = FALSE,
+    size = 3, color = "black") +
+  geom_text(data = significance_filtered, aes(x = x, y = y, label = label), size = 5, color = "black", inherit.aes = FALSE)
+
+# E coli, yeast and arabidopsis: very short genes (< 3000)
+# C elegans and D melanogaster: short genes (< 7000)
+# All mammals: Long genes (40.000 - 80.000)
+
+```
+
+## Test for significance
+
+```{r}
+# Wilcoxon Rank-Sum Test for significance
+plot1_stats <- HkPolyx %>%
+  group_by(Organism) %>%
+  summarise(
+    p_value = wilcox.test(genelength ~ Hk)$p.value
+  ) %>%
+  mutate(significance = case_when(
+    p_value < 0.001 ~ "***",
+    p_value < 0.01 ~ "**",
+    p_value < 0.05 ~ "*",
+    TRUE ~ "ns"
+  ))
+
+print(plot1_stats)
+```
+

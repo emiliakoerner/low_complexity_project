@@ -1,0 +1,16 @@
+Organism	Count_not_Hk	Count_Hk	Mean_Length_not_Hk	Mean_Length_Hk	Mean_Length_All	p_value_Hk_notHk	median_MYA	group_of_organism
+E. coli	3800	601	312.79	275.65	307.71	2.48e-06	3618.0	Bacteria
+S. cerevisiae	4958	1102	471.80	542.98	484.75	2.11e-11	1275.0	Fungi
+A. thaliana	26864	584	402.51	496.53	404.51	8.26e-14	1530.0	Plants
+C. elegans	18636	1188	394.59	652.59	410.05	3.52e-71	686.0	Invertebrates
+D. melanogaster	9617	4205	526.07	557.05	535.50	2.24e-14	686.0	Invertebrates
+Gallus gallus
+O. anatinus	15562	1828	564.80	627.46	571.39	6.64e-19	180.0	Vertebrates
+M. domestica	18481	2742	525.15	553.53	528.82	3.27e-07	160.0	Vertebrates
+C. griseus	22970	917	364.49	464.58	368.33	3.12e-57	87.0	Vertebrates
+M. musculus	18582	3175	537.10	561.16	540.61	5.16e-16	87.0	Vertebrates
+Macaca mulatta	19274	2619	536.96	523.12	535.31	1.46e-06	28.8	Vertebrates
+Pongo abelii	18749	2816	541.23	523.19	538.87	2.40e-02	15.2	Vertebrates
+Gorilla gorilla gorilla	18570	3213	513.75	474.24	507.92	6.74e-01	8.6	Vertebrates
+Pan troglodytes	20012	3039	517.06	477.53	511.85	3.37e-01	6.4	Vertebrates
+Homo sapiens	18483	2167	565.88	455.07	554.25	1.18e-29	0.0	Vertebrates
