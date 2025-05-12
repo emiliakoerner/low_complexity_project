@@ -1,7 +1,7 @@
 import pandas as pd
 import sys
 import os
-sys.path.append(os.path.abspath('lib'))
+sys.path.append(os.path.abspath('../lib'))
 from goO_constants import *
 from constants import *
 
@@ -35,13 +35,12 @@ def find_file_path(proteome_id, tax_id):
     tax_id = str(tax_id)
     for folder in TAXON_CATEGORIES:
         file_path = f"{REF_DIR}/{folder}/{proteome_id}/{proteome_id}_{tax_id}.fasta.gz"
-        print(file_path)
         if os.path.exists(file_path):  # Check if the file actually exists
             return file_path, folder  # Return path & superregnum
     return None, None
 
 # Example usage with your UniProt data
-df = pd.read_csv("D:/Emilia/proteomes_all_2025_02_17.tsv/proteomes_all_2025_02_17.tsv", sep="\t")
+df = pd.read_csv(f"{INPUT_BASE_DIR}/proteomes_all_2025_02_17.tsv/proteomes_all_2025_02_17.tsv", sep="\t")
 # Apply the function to the lineage column
 df["group_of_organism"] = df["Taxonomic lineage"].apply(categorize_organism)
 # Locate file paths and superregna dynamically
@@ -52,4 +51,4 @@ df["File_Path"] = df["File_Path"].str.replace(f"{REF_DIR}/", "", regex=False)
 # **Filter out rows where File_Path is None (i.e., the file wasn't found)**
 df = df.dropna(subset=["File_Path"])
 # Save the output
-df.to_csv("output.tsv", sep="\t", index=False)
+df.to_csv("output_group_of_organisms.tsv", sep="\t", index=False)

@@ -1,7 +1,7 @@
 import pandas as pd
 import sys
 import os
-sys.path.append(os.path.abspath('lib'))
+sys.path.append(os.path.abspath('../lib'))
 from goO_constants import *
 from constants import *
 
@@ -61,7 +61,7 @@ df = pd.read_csv("D:/Emilia/low_complexity_project/main_tables/proteomes_uniprot
 
 # Load virus-host information
 df_host_info = pd.read_csv("D:/Emilia/virushostdb.tsv", sep="\t")
-df_host_info = df_host_info[['virus tax id', 'host lineage']]
+df_host_info = df_host_info[['virus tax id', 'host tax id', 'host lineage']]
 
 # Ensure correct column types before merging
 df['tax_id'] = df['tax_id'].astype(str)
@@ -86,6 +86,7 @@ print("Final dataset rows:", df.shape[0])
 
 # Convert host tax ids to a set for fast lookup
 host_tax_ids = set(df_host_info["host tax id"].astype(str))
+df.drop(columns=['host tax id'], inplace=True)
 
 # Update supergroup for hosts
 df.loc[df["tax_id"].isin(host_tax_ids) & (df["supergroup"] == "Eukaryotes"), "supergroup"] = "Eukaryotic host"
@@ -93,6 +94,7 @@ df.loc[df["tax_id"].isin(host_tax_ids) & (df["supergroup"] == "Prokaryotes"), "s
 
 # Print counts to check changes
 print(df["supergroup"].value_counts())
+
 
 # Save output
 df.to_csv("output_with_host_groups_and_supergroup.tsv", sep="\t", index=False)
