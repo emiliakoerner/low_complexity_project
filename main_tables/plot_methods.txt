@@ -1,21 +1,3 @@
-Methods
-
-hr_per_organism_group.tsv:
-- num_proteins is the number of proteins in each Group of Organisms (GoO) in each HR category.
-- average_proteins_per_organism is the number of proteins in this category in his GoO (num_proteins) divided by the total number of species in this GoO (num_organisms).
-- Average_total_prots__GoO is the sum of all rows in the column average_proteins_per_organism for this GoO. In other words, the number of all proteins in this GoO (across all HR categories) divided by the number of species in this GoO.
-- Normalized_Count is the average proteins/organism in this HR category divided by the total proteins/organism in this GoO. In other words, the proportion of proteins in this GoO that belong to each HR category.
-
-Violins plot:
-- The lengths of all proteins are plotted with geom_violin.
-- Arithmetic mean is calculated by R and displayed as a circle in each violin plot
-- A subset was used for Count_grouped = 0 to reduce the data for plotting. The filtering was done randomly using slice_sample, which uses R's default Pseudo-Random Number Generator (Mersenne Twister algorithm), with the seed 123. 50% of proteins in this category were removed.
-
-HR_proteins_perorganism_log:
-- The column "average_proteins_per_organism" is plotted on a base-10 logarithmic scale. Meaning the number of proteins in each HR category for each GoO, normalized by the number of species in that GoO. The HR categories 0 and >8 were filtered out.
-
-HR_proteins_perorganism_log_normalized:
-- The column "Normalized_Count" is plotted on a base-10 logarithmic scale. Meaning the number of proteins in each HR category for each GoO, normalized by the number of species in that GoO and normalized by the average number of proteins per organism in that GoO. The HR categories 0 and >8 were filtered out.
-
-Means_lines_points:
-- The arithmetic mean for the protein lengths in each GoO and HR category is calculated and displayed as a point.
+version https://git-lfs.github.com/spec/v1
+oid sha256:7f50bd50924c21cc70923048e779c58f4301b6163d32f972702192716a483417
+size 1967

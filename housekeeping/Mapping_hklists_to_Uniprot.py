@@ -50,7 +50,7 @@ for up_id in organisms:
     mapping_file = globals().get(f"{up_id}_mapping")
 
     # Path if already mapped via UniProt tool
-    hk_file_uniprot = os.path.join(MAINTABLES_DIR, f"uniprot_id_mapping_tool/{up_id}_uniprot_tool.tsv")
+    hk_file_uniprot = os.path.join(MAINTABLES_DIR, f"uniprot_id_mapping_tool/{up_id}.tsv")
 
     if os.path.exists(hk_file_mapped) and mapping_file and os.path.exists(mapping_file):
         print(f"[{up_id}] Using internal mapping: {hk_file_mapped} + {mapping_file} → {hk_list}")

@@ -2,7 +2,7 @@ import os
 import sys
 import re
 from collections import defaultdict
-sys.path.append(os.path.abspath('../../lib'))
+sys.path.append(os.path.abspath('../lib'))
 from load_organisms import organisms
 from constants import *  # Import constants.py from hr_lib
 
